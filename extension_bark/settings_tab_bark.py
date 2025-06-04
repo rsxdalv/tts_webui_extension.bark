@@ -1,9 +1,7 @@
-import os
 import gradio as gr
 from tts_webui.config.config import config
 from tts_webui.config.save_config_bark import save_config_bark
-from extension_bark.BarkModelManager import bark_model_manager
-from tts_webui.utils.setup_or_recover import generate_env, write_env
+from .BarkModelManager import bark_model_manager
 
 
 def settings_tab_bark() -> None:
@@ -55,56 +53,6 @@ def bark_settings_ui(settings_tab: gr.Tab):
             )
 
         save_beacon = gr.Markdown("")
-
-        gr.Markdown(
-            """
-            ## Environment variables
-            (Requires restart)
-        """
-        )
-
-        def _cast_bool(x: str):
-            return x.lower() in ("true", "1")
-
-        env_suno_use_small_models = gr.Checkbox(
-            label="Use small models",
-            value=_cast_bool(os.environ.get("SUNO_USE_SMALL_MODELS", "")),
-        )
-        env_suno_enable_mps = gr.Checkbox(
-            label="Enable MPS", value=_cast_bool(os.environ.get("SUNO_ENABLE_MPS", ""))
-        )
-        env_suno_offload_cpu = gr.Checkbox(
-            label="Offload GPU models to CPU",
-            value=_cast_bool(os.environ.get("SUNO_OFFLOAD_CPU", "")),
-        )
-
-        def save_env_variables(
-            env_suno_use_small_models,
-            env_suno_enable_mps,
-            env_suno_offload_cpu,
-        ):
-            write_env(
-                generate_env(
-                    env_suno_use_small_models=env_suno_use_small_models,
-                    env_suno_enable_mps=env_suno_enable_mps,
-                    env_suno_offload_cpu=env_suno_offload_cpu,
-                )
-            )
-
-        env_inputs = [
-            env_suno_use_small_models,
-            env_suno_enable_mps,
-            env_suno_offload_cpu,
-        ]
-
-        for i in env_inputs:
-            i.change(
-                fn=save_env_variables,
-                inputs=env_inputs,
-                api_name=i == env_inputs[0] and "save_env_variables_bark" or None,
-            )
-
-        # refresh environment variables button
 
         inputs = [
             text_use_gpu,

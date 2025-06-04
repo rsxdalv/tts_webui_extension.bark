@@ -2,7 +2,7 @@ import glob
 from typing import Any
 import numpy as np
 
-from extension_bark.FullGeneration import FullGeneration
+from .FullGeneration import FullGeneration
 from tts_webui.utils.pack_metadata import pack_metadata, unpack_metadata
 
 

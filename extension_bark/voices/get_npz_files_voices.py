@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from extension_bark.voices.get_hash_memoized import get_hash_memoized
+from .get_hash_memoized import get_hash_memoized
 from tts_webui.history_tab.generate_relative_date import generate_relative_date
 
 

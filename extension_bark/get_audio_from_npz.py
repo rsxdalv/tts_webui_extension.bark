@@ -1,12 +1,12 @@
 from typing import Tuple
-from extension_bark.FullGeneration import FullGeneration
+from .FullGeneration import FullGeneration
 from bark.generation import (
     SAMPLE_RATE,
     codec_decode,
     models,
     load_codec_model,
 )
-from extension_bark.npz_tools import load_npz
+from .npz_tools import load_npz
 from tts_webui.config.config import config
 import numpy as np
 

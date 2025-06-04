@@ -6,12 +6,10 @@ import gradio as gr
 
 from tts_webui.config.config import config
 
-# from extension_bark.clone.tab_voice_clone import tab_voice_clone
-
-from extension_bark.get_speaker_gender import get_speaker_gender
-from extension_bark.npz_tools import get_npz_files, save_npz
+from .get_speaker_gender import get_speaker_gender
+from .npz_tools import get_npz_files, save_npz
 from tts_webui.utils.split_text_functions import split_by_length_simple, split_by_lines
-from extension_bark.generation_settings import (
+from .generation_settings import (
     PromptSplitSettings,
     LongPromptHistorySettings,
 )
@@ -22,32 +20,13 @@ from tts_webui.utils.save_json_result import save_json_result
 from tts_webui.utils.get_dict_props import get_dict_props
 from tts_webui.utils.randomize_seed import randomize_seed_ui
 
-from tts_webui.decorators.gradio_dict_decorator import dictionarize
-from tts_webui.decorators.decorator_apply_torch_seed import (
-    decorator_apply_torch_seed_generator,
-)
-from tts_webui.decorators.decorator_log_generation import (
-    decorator_log_generation_generator,
-)
-from tts_webui.decorators.decorator_save_wav import (
-    decorator_save_wav_generator,
-)
-from tts_webui.decorators.decorator_add_base_filename import (
-    decorator_add_base_filename_generator,
-    format_date_for_file,
-)
-from tts_webui.decorators.decorator_add_date import (
-    decorator_add_date_generator,
-)
-from tts_webui.decorators.decorator_add_model_type import (
-    decorator_add_model_type_generator,
-)
-from tts_webui.decorators.log_function_time import log_generator_time
+from tts_webui.decorators import *
 from tts_webui.extensions_loader.decorator_extensions import (
     decorator_extension_inner_generator,
     decorator_extension_outer_generator,
 )
 from tts_webui.utils.outputs.path import get_relative_output_path_ext
+from gradio_iconbutton import IconButton
 
 # from bark import SAMPLE_RATE
 SAMPLE_RATE = 24_000
@@ -71,7 +50,7 @@ SUPPORTED_LANGS = [
 
 def _decorator_bark_save_metadata_generator(fn):
     def _save_metadata_and_npz(kwargs, result_dict):
-        from extension_bark.generate_and_save_metadata import generate_bark_metadata
+        from .generate_and_save_metadata import generate_bark_metadata
 
         metadata = generate_bark_metadata(
             date=format_date_for_file(result_dict["date"]),
@@ -145,8 +124,8 @@ def bark_generate_long(
     long_prompt_history_radio,
     **kwargs,
 ):
-    from extension_bark.extended_generate import custom_generate_audio
-    from extension_bark.BarkModelManager import bark_model_manager
+    from .extended_generate import custom_generate_audio
+    from .BarkModelManager import bark_model_manager
 
     pieces = []
     original_history_prompt = history_prompt
@@ -197,7 +176,7 @@ def bark_generate_long(
 
 
 def unload_models():
-    from extension_bark.BarkModelManager import bark_model_manager
+    from .BarkModelManager import bark_model_manager
 
     bark_model_manager.unload_models()
     return gr.Button(value="Unloaded")
@@ -212,22 +191,18 @@ def _npz_dropdown_ui(label):
         allow_custom_value=True,
         show_label=True,
     )
-    btn_style = {
-        "size": "sm",
-        "elem_classes": "btn-sm material-symbols-outlined",
-    }
-    gr.Button("save", **btn_style).click(  # type: ignore
+    IconButton("save").click(
         fn=lambda x: [
             shutil.copy(x, os.path.join("voices", os.path.basename(x))),
         ],
         inputs=[npz_dropdown],
     )
-    gr.Button("refresh", **btn_style).click(  # type: ignore
+    IconButton("refresh").click(
         fn=lambda: gr.Dropdown(choices=get_npz_files() + [""]),  # type: ignore
         outputs=npz_dropdown,
         api_name=f"reload_old_generation_dropdown{ '' if label == 'Audio Voice' else '_semantic'}",
     )
-    gr.Button("clear", **btn_style).click(  # type: ignore
+    IconButton("clear").click(
         fn=lambda: gr.Dropdown(value=None),
         outputs=npz_dropdown,
     )
@@ -259,7 +234,7 @@ def _voice_select_ui(history_prompt):
     voice_inputs = [language, speaker_id, use_v2]
 
     def create_voice_string_lazy(language, speaker_id, use_v2):
-        from extension_bark.create_voice_string import create_voice_string
+        from .create_voice_string import create_voice_string
 
         return create_voice_string(language, speaker_id, use_v2)
 

@@ -1,7 +1,7 @@
-from extension_bark.FullGeneration import FullGeneration
-from extension_bark.BarkParams import BarkParams
+from .FullGeneration import FullGeneration
+from .BarkParams import BarkParams
 from bark.generation import models
-from extension_bark.voices.get_hash_memoized import get_hash_memoized
+from .voices.get_hash_memoized import get_hash_memoized
 
 
 def _is_big_model(model):

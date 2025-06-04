@@ -3,16 +3,18 @@ import gradio as gr
 import os
 import shutil
 
+from gradio_iconbutton import IconButton
 
-from extension_bark.history_to_hash import history_to_hash
-from extension_bark.get_audio_from_npz import get_audio_from_full_generation
-from extension_bark.npz_tools import load_npz, save_npz
-from extension_bark.voices.get_npz_files_voices import get_npz_files_voices
-from extension_bark.voices.save_photo import save_photo
-from extension_bark.voices.edit_metadata_ui import edit_metadata_ui
+
+from ..history_to_hash import history_to_hash
+from ..get_audio_from_npz import get_audio_from_full_generation
+from ..npz_tools import load_npz, save_npz
+from .get_npz_files_voices import get_npz_files_voices
+from .save_photo import save_photo
+from .edit_metadata_ui import edit_metadata_ui
 from tts_webui.history_tab.main import _get_filename, _get_row_index
 from tts_webui.utils.open_folder import open_folder
-from tts_webui.utils.gr_reload_button import gr_reload_button
+
 
 def update_voices_tab():
     return gr.List(value=get_npz_files_voices())
@@ -41,7 +43,7 @@ def voices_tab(directory="voices"):
             with gr.Row():
                 button_output = gr.Button(value=f"Open {directory} folder")
 
-                reload_button = gr_reload_button()
+                reload_button = IconButton("refresh")
             button_output.click(lambda: open_folder(directory))
 
             datatypes = ["date", "str", "str", "str", "str"]
@@ -60,7 +62,6 @@ def voices_tab(directory="voices"):
                 col_count=len(datatypes),
                 headers=headers,
                 max_height=800,
-                #  elem_classes="file-list"
             )
         with gr.Column():
             audio = gr.Audio(visible=True, type="numpy", label="Fine prompt audio")
@@ -116,7 +117,9 @@ def voices_tab(directory="voices"):
         semantic_prompt = full_generation["semantic_prompt"]
         len_semantic_prompt = len(semantic_prompt)
         semantic_prompt = semantic_prompt[
-            len_semantic_prompt * crop_min // 100 : len_semantic_prompt
+            len_semantic_prompt
+            * crop_min
+            // 100 : len_semantic_prompt
             * crop_max
             // 100
         ]

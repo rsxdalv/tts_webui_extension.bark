@@ -1,5 +1,5 @@
 from typing import Union
-from extension_bark.generate_random_seed import generate_random_seed
+from .generate_random_seed import generate_random_seed
 from tts_webui.utils.set_seed import set_seed
 
 

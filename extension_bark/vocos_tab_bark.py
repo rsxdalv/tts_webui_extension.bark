@@ -3,7 +3,7 @@ import torchaudio
 import gradio as gr
 import tempfile
 
-from extension_bark.npz_tools import load_npz
+from .npz_tools import load_npz
 
 
 def reconstruct_with_vocos(audio_tokens):
@@ -40,7 +40,7 @@ def upsample_to_44100(audio):
 
 
 def get_audio(npz_file: tempfile._TemporaryFileWrapper):
-    from extension_bark.get_audio_from_npz import get_audio_from_full_generation
+    from .get_audio_from_npz import get_audio_from_full_generation
 
     if npz_file is None:
         print("No file selected")

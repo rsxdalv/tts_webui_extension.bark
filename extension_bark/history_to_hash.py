@@ -1,9 +1,9 @@
 import hashlib
 import json
 from typing import Union
-from extension_bark.get_bark_voice_hash import get_hash_from_voice_name
-from extension_bark.FullGeneration import FullGeneration
-from extension_bark.npz_tools import load_npz
+from .get_bark_voice_hash import get_hash_from_voice_name
+from .FullGeneration import FullGeneration
+from .npz_tools import load_npz
 
 
 def history_to_hash(voice_name: Union[None, str, FullGeneration]):

@@ -1,4 +1,4 @@
-from extension_bark.npz_tools import load_npz, save_npz
+from ..npz_tools import load_npz, save_npz
 import gradio as gr
 import json
 

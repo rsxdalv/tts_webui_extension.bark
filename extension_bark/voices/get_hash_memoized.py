@@ -1,4 +1,4 @@
-from extension_bark.history_to_hash import history_to_hash
+from ..history_to_hash import history_to_hash
 
 
 def memoize(func, file_path):
