@@ -1,12 +1,12 @@
 import setuptools
 
 setuptools.setup(
-    name="extension_bark",
+    name="tts_webui_extension.bark",
     packages=setuptools.find_namespace_packages(),
     version="0.0.1",
     author="rsxdalv",
     description="Bark: A text-to-speech model",
-    url="https://github.com/rsxdalv/extension_bark",
+    url="https://github.com/rsxdalv/tts_webui_extension.bark",
     project_urls={},
     scripts=[],
     install_requires=[
@@ -18,3 +18,4 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
 )
+
