@@ -1,16 +1,22 @@
 import setuptools
+from pathlib import Path
+
+HERE = Path(__file__).parent
+README = (HERE / "README.md").read_text(encoding="utf-8") if (HERE / "README.md").exists() else ""
 
 setuptools.setup(
     name="tts_webui_extension.bark",
     packages=setuptools.find_namespace_packages(),
-    version="0.0.1",
+    version="0.0.2",
     author="rsxdalv",
     description="Bark: A text-to-speech model",
+    long_description=README,
+    long_description_content_type="text/markdown",
     url="https://github.com/rsxdalv/tts_webui_extension.bark",
     project_urls={},
     scripts=[],
     install_requires=[
-        "suno-bark @ https://github.com/rsxdalv/bark/releases/download/v0.1.0/suno_bark-0.1.0-py3-none-any.whl",
+        "tts-webui.bark",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
