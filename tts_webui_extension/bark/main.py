@@ -13,7 +13,7 @@ def ui():
         voices_tab()
         with gr.Tab("Voice Clone"):
             try:
-                from extension_bark_voice_clone.main import ui as voice_clone_ui
+                from tts_webui_extension.bark_voice_clone.main import ui as voice_clone_ui
 
                 voice_clone_ui()
             except ImportError:

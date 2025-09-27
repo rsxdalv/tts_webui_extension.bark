@@ -8,7 +8,7 @@ from .npz_tools import load_npz
 
 def reconstruct_with_vocos(audio_tokens):
     try:
-        from extension_vocos.main import get_vocos_model
+        from tts_webui_extension.vocos.main import get_vocos_model
     except ImportError:
         print("vocos extension is not installed")
         gr.Error("vocos extension is not installed")
