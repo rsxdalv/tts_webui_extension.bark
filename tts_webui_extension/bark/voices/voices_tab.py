@@ -12,8 +12,16 @@ from ..npz_tools import load_npz, save_npz
 from .get_npz_files_voices import get_npz_files_voices
 from .save_photo import save_photo
 from .edit_metadata_ui import edit_metadata_ui
-from tts_webui.history_tab.main import _get_filename, _get_row_index
 from tts_webui.utils.open_folder import open_folder
+
+def _get_row_index(evt: gr.SelectData):
+    index: int | tuple[int, int] = evt.index
+    return index[0] if isinstance(index, (list, tuple)) else index
+
+
+def _get_filename(table, index):
+    return table["data"][index][-1]
+
 
 
 def update_voices_tab():
