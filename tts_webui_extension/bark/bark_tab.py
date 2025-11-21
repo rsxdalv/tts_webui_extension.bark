@@ -122,6 +122,7 @@ def bark_generate_long(
     history_prompt,
     long_prompt_radio,
     long_prompt_history_radio,
+    model_name=None,
     **kwargs,
 ):
     from .extended_generate import custom_generate_audio
@@ -137,8 +138,8 @@ def bark_generate_long(
             original_history_prompt,
         )
 
-        if not bark_model_manager.models_loaded:
-            bark_model_manager.reload_models(config)
+        if not bark_model_manager.models_loaded or bark_model_manager.current_model_name != model_name:
+            bark_model_manager.reload_models(config, model_name=model_name)
 
         full_generation, audio_array = custom_generate_audio(
             text=prompt_piece,
@@ -251,7 +252,10 @@ def _voice_select_ui(history_prompt):
 
 
 def bark_ui():
+    from .BarkModelManager import bark_model_manager
     with gr.Row():
+        model_choices = bark_model_manager.get_models()
+        model_name = gr.Dropdown(label="Model", choices=[""] + model_choices, value="")
         unload_models_button = gr.Button("Unload models")
         unload_models_button.click(
             fn=unload_models,
@@ -354,6 +358,7 @@ def bark_ui():
         history_prompt_semantic: "history_prompt_semantic",
         long_prompt_radio: "long_prompt_radio",
         long_prompt_history_radio: "long_prompt_history_radio",
+        model_name: "model_name",
     }
 
     output_dict = {

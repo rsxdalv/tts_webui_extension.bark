@@ -1,3 +1,5 @@
+import os
+
 def bark_load_models_direct_api(
     text_use_gpu,
     text_use_small,
@@ -8,45 +10,64 @@ def bark_load_models_direct_api(
     codec_use_gpu,
     c,
     force_reload=False,
+    model_name=None,
 ):
     from bark.generation import load_model, load_codec_model
+    from .model_loader.loader import load_models_into_bark
 
     print("Loading Bark models...")
-    load_model("text_use_gpu", c["text_use_gpu"])
-    load_model("coarse_use_gpu", c["coarse_use_gpu"])
-    load_model("fine_use_gpu", c["fine_use_gpu"])
-    load_model("codec_use_gpu", c["codec_use_gpu"])
+    if model_name:
+        print(f"Loading custom model: {model_name}")
+        model_path = os.path.join("data", "models", "bark", model_name)
+        if not model_path.endswith(os.path.sep):
+            model_path += os.path.sep
+        load_models_into_bark(model_path)
+        load_codec_model(use_gpu=codec_use_gpu, force_reload=force_reload)
+    else:
+        load_model("text_use_gpu", c["text_use_gpu"])
+        load_model("coarse_use_gpu", c["coarse_use_gpu"])
+        load_model("fine_use_gpu", c["fine_use_gpu"])
+        load_model("codec_use_gpu", c["codec_use_gpu"])
+        
+        _ = load_model(
+            model_type="text",
+            use_gpu=text_use_gpu,
+            use_small=text_use_small,
+            force_reload=force_reload,
+        )
+        _ = load_model(
+            model_type="coarse",
+            use_gpu=coarse_use_gpu,
+            use_small=coarse_use_small,
+            force_reload=force_reload,
+        )
+        _ = load_model(
+            model_type="fine",
+            use_gpu=fine_use_gpu,
+            use_small=fine_use_small,
+            force_reload=force_reload,
+        )
+        _ = load_codec_model(use_gpu=codec_use_gpu, force_reload=force_reload)
     print("Loaded Bark models")
-
-    _ = load_model(
-        model_type="text",
-        use_gpu=text_use_gpu,
-        use_small=text_use_small,
-        force_reload=force_reload,
-    )
-    _ = load_model(
-        model_type="coarse",
-        use_gpu=coarse_use_gpu,
-        use_small=coarse_use_small,
-        force_reload=force_reload,
-    )
-    _ = load_model(
-        model_type="fine",
-        use_gpu=fine_use_gpu,
-        use_small=fine_use_small,
-        force_reload=force_reload,
-    )
-    _ = load_codec_model(use_gpu=codec_use_gpu, force_reload=force_reload)
 
 
 class BarkModelManager:
     def __init__(self):
         self.models_loaded = False
+        self.current_model_name = None
 
-    def reload_models(self, config):
-        from bark.generation import preload_models
+    def get_models(self):
+        models_dir = os.path.join("data", "models", "bark")
+        if not os.path.exists(models_dir):
+            return []
+        return [d for d in os.listdir(models_dir) if os.path.isdir(os.path.join(models_dir, d))]
+
+    def reload_models(self, config, model_name=None):
+        from bark.generation import preload_models, load_codec_model
+        from .model_loader.loader import load_models_into_bark
 
         self.models_loaded = True
+        self.current_model_name = model_name
         c = config["model"]
 
         def _print_prop(name: str, gpu: bool, small: bool):
@@ -58,6 +79,16 @@ class BarkModelManager:
             )
 
         print(f"{'Reloading' if self.models_loaded else 'Loading'} Bark models")
+        
+        if model_name:
+            print(f"Loading custom model: {model_name}")
+            model_path = os.path.join("data", "models", "bark", model_name)
+            if not model_path.endswith(os.path.sep):
+                model_path += os.path.sep
+            load_models_into_bark(model_path)
+            load_codec_model(use_gpu=c["codec_use_gpu"], force_reload=True)
+            return
+
         _print_prop("Text-to-Semantic", c["text_use_gpu"], c["text_use_small"])
         _print_prop("Semantic-to-Coarse", c["coarse_use_gpu"], c["coarse_use_small"])
         _print_prop("Coarse-to-Fine", c["fine_use_gpu"], c["fine_use_small"])

@@ -207,8 +207,10 @@ def _load_filtered_model(
     return model
 
 
-def _load_models(ckpt_dir: str, device: str = "cuda"):
-    extension = ".pth" if ckpt_dir.endswith("-pth") else ".safetensors"
+def _load_models(ckpt_dir: str, device: str = None):
+    if device is None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    extension = ".pth" if ckpt_dir.rstrip(os.path.sep).endswith("-pth") else ".safetensors"
 
     model_text_big = _load_filtered_model(
         ckpt_dir + "text_model_config.json",
@@ -230,8 +232,8 @@ def _load_models(ckpt_dir: str, device: str = "cuda"):
     return model_text_big, model_coarse_big, model_fine_big
 
 
-def load_models_into_bark(ckpt_dir: str):
-    model_text_big, model_coarse_big, model_fine_big = _load_models(ckpt_dir)
+def load_models_into_bark(ckpt_dir: str, device: str = None):
+    model_text_big, model_coarse_big, model_fine_big = _load_models(ckpt_dir, device=device)
     from bark.generation import models
 
     models["text"] = model_text_big
