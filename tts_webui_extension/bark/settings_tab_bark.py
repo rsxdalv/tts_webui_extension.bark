@@ -11,7 +11,7 @@ def settings_tab_bark() -> None:
 
 def bark_settings_ui(settings_tab: gr.Tab):
     with gr.Column():
-        model_config = config["model"]
+        model_config = config["extension_bark"]
         with gr.Row(variant="panel"):
             gr.Markdown("### Text generation:")
             text_use_gpu = gr.Checkbox(
@@ -74,7 +74,7 @@ def bark_settings_ui(settings_tab: gr.Tab):
 
         def sync_ui():
             def checkbox_update_helper(key: str):
-                return gr.Checkbox(value=config["model"][key])
+                return gr.Checkbox(value=config["extension_bark"][key])
 
             return [
                 checkbox_update_helper("text_use_gpu"),

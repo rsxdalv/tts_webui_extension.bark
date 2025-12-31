@@ -68,7 +68,7 @@ class BarkModelManager:
 
         self.models_loaded = True
         self.current_model_name = model_name
-        c = config["model"]
+        c = config["extension_bark"]
 
         def _print_prop(name: str, gpu: bool, small: bool):
             def _yes_or_no(x: bool):
