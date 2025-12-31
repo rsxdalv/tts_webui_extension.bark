@@ -1,6 +1,5 @@
 import gradio as gr
-from tts_webui.config.config import config
-from tts_webui.config.save_config_bark import save_config_bark
+from .bark_config import get_bark_config, get_bark_config_value, save_bark_config
 from .BarkModelManager import bark_model_manager
 
 
@@ -11,45 +10,44 @@ def settings_tab_bark() -> None:
 
 def bark_settings_ui(settings_tab: gr.Tab):
     with gr.Column():
-        model_config = config["extension_bark"]
         with gr.Row(variant="panel"):
             gr.Markdown("### Text generation:")
             text_use_gpu = gr.Checkbox(
                 label="Use GPU",
-                value=model_config["text_use_gpu"],
+                value=get_bark_config_value("text_use_gpu"),
             )
             text_use_small = gr.Checkbox(
                 label="Use small model",
-                value=model_config["text_use_small"],
+                value=get_bark_config_value("text_use_small"),
             )
 
         with gr.Row(variant="panel"):
             gr.Markdown("### Coarse-to-fine inference:")
             coarse_use_gpu = gr.Checkbox(
                 label="Use GPU",
-                value=model_config["coarse_use_gpu"],
+                value=get_bark_config_value("coarse_use_gpu"),
             )
             coarse_use_small = gr.Checkbox(
                 label="Use small model",
-                value=model_config["coarse_use_small"],
+                value=get_bark_config_value("coarse_use_small"),
             )
 
         with gr.Row(variant="panel"):
             gr.Markdown("### Fine-tuning:")
             fine_use_gpu = gr.Checkbox(
                 label="Use GPU",
-                value=model_config["fine_use_gpu"],
+                value=get_bark_config_value("fine_use_gpu"),
             )
             fine_use_small = gr.Checkbox(
                 label="Use small model",
-                value=model_config["fine_use_small"],
+                value=get_bark_config_value("fine_use_small"),
             )
 
         with gr.Row(variant="panel"):
             gr.Markdown("### Codec:")
             codec_use_gpu = gr.Checkbox(
                 label="Use GPU for codec",
-                value=model_config["codec_use_gpu"],
+                value=get_bark_config_value("codec_use_gpu"),
             )
 
         save_beacon = gr.Markdown("")
@@ -66,24 +64,21 @@ def bark_settings_ui(settings_tab: gr.Tab):
 
         for i in inputs:
             i.change(
-                fn=save_config_bark,
+                fn=save_bark_config,
                 inputs=inputs,
                 outputs=[save_beacon],
                 api_name=i == inputs[0] and "save_config_bark" or None,
             )
 
         def sync_ui():
-            def checkbox_update_helper(key: str):
-                return gr.Checkbox(value=config["extension_bark"][key])
-
             return [
-                checkbox_update_helper("text_use_gpu"),
-                checkbox_update_helper("text_use_small"),
-                checkbox_update_helper("coarse_use_gpu"),
-                checkbox_update_helper("coarse_use_small"),
-                checkbox_update_helper("fine_use_gpu"),
-                checkbox_update_helper("fine_use_small"),
-                checkbox_update_helper("codec_use_gpu"),
+                gr.Checkbox(value=get_bark_config_value("text_use_gpu")),
+                gr.Checkbox(value=get_bark_config_value("text_use_small")),
+                gr.Checkbox(value=get_bark_config_value("coarse_use_gpu")),
+                gr.Checkbox(value=get_bark_config_value("coarse_use_small")),
+                gr.Checkbox(value=get_bark_config_value("fine_use_gpu")),
+                gr.Checkbox(value=get_bark_config_value("fine_use_small")),
+                gr.Checkbox(value=get_bark_config_value("codec_use_gpu")),
             ]
 
         settings_tab.select(fn=sync_ui, outputs=inputs, api_name="get_config_bark")
@@ -131,7 +126,7 @@ def _load_models(
     fine_use_small,
     codec_use_gpu,
 ):
-    save_config_bark(
+    save_bark_config(
         text_use_gpu,
         text_use_small,
         coarse_use_gpu,
@@ -141,7 +136,7 @@ def _load_models(
         codec_use_gpu,
     )
     try:
-        bark_model_manager.reload_models(config)
+        bark_model_manager.reload_models()
         return gr.Button(value="Reload models", interactive=True)
     except Exception as e:
         print(e)

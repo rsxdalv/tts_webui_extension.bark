@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tts_webui_extension.bark"
-version = "1.0.0"
+version = "1.1.0"
 description = "A Bark: A text-to-speech model extension for TTS Generation WebUI"
 readme = "README.md"
 authors = [{ name = "rsxdalv" }]

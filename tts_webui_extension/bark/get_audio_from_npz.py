@@ -7,7 +7,7 @@ from bark.generation import (
     load_codec_model,
 )
 from .npz_tools import load_npz
-from tts_webui.config.config import config
+from .bark_config import get_bark_config_value
 import numpy as np
 
 
@@ -21,7 +21,7 @@ def get_audio_from_full_generation(
 ) -> Tuple[int, np.ndarray]:
     fine_prompt = full_generation["fine_prompt"]
     if "codec" not in models:
-        codec_use_gpu = config["extension_bark"]["codec_use_gpu"]
+        codec_use_gpu = get_bark_config_value("codec_use_gpu")
         load_codec_model(use_gpu=codec_use_gpu)
     audio_array: np.ndarray = codec_decode(fine_prompt.astype(np.int64))
     return (SAMPLE_RATE, audio_array)
