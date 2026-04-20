@@ -139,7 +139,7 @@ def bark_generate_long(
         )
 
         if not bark_model_manager.models_loaded or bark_model_manager.current_model_name != model_name:
-            bark_model_manager.reload_models(config, model_name=model_name)
+            bark_model_manager.reload_models(model_name=model_name)
 
         full_generation, audio_array = custom_generate_audio(
             text=prompt_piece,
