@@ -3,6 +3,7 @@ from .bark_tab import bark_ui
 from .voices.voices_tab import voices_tab
 from .settings_tab_bark import settings_tab_bark
 from .vocos_tab_bark import vocos_tab_bark
+from tts_webui.utils.torch_load_patch import apply_torch_load_patch
 
 
 def ui():
@@ -27,6 +28,7 @@ def ui():
 
 
 def extension__tts_generation_webui():
+    apply_torch_load_patch()
     ui()
     return {
         "package_name": "extension_bark",
